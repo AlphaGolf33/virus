@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Virus</title>
+    <style>
+      form {
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .row {
+        display: flex;
+        gap: 16px;
+      }
+
+      input {
+        flex: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Virus</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <div class="row">
+        <label for="file">Fichier</label>
+        <input required id="file" type="file" name="file" accept=".exe" />
+      </div>
+      <div class="row">
+        <label for="port">Port</label>
+        <input required id="port" type="number" name="port" />
+      </div>
+      <input type="submit" value="Upload" />
+    </form>
+  </body>
+</html>

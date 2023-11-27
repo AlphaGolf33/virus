@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Virus</title>
+    <style>
+      div {
+        display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Vérification du virus</h1>
+    <div>
+      <span>État : </span>
+      <span id="status"></span>
+    </div>
+  </body>
+
+  <script>
+    const port = {{port}};
+
+    const delay = (duration) =>
+      new Promise((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, duration);
+      });
+
+    (async () => {
+      for (let i = 0; i < 15; i++) {
+        const response = await fetch("/status?port=" + port);
+        const status = await response.text();
+        document.getElementById("status").innerText = status;
+        await delay(1000);
+      }
+    })();
+  </script>
+</html>
