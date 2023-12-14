@@ -2,8 +2,8 @@
 
 import os
 import socket
+import subprocess
 import threading
-import time
 
 from flask import Flask, render_template, request
 
@@ -32,16 +32,22 @@ class Conn(threading.Thread):
             client, addr = self.server_socket.accept()
             print(f'Connection from {addr} on port {self.port}')
             conns[self.port]['status'] = 'OK'
-            client.sendall("toto")
             client.close()
         except socket.timeout:
+            conns[self.port]['status'] = 'KO: Server timout (20s)'
             print(f'Timeout 20s for port {self.port}')
             self.stop()
 
     def stop(self):
         print(f'Closing server on port {self.port}')
         self.server_socket.close()
-        conns.pop(self.port)
+
+
+def stop_thread(port):
+    if port in conns:
+        t = conns[port]['thread']
+        t.stop()
+        t.join()
 
 
 @app.route('/')
@@ -56,13 +62,14 @@ def upload_file():
     file_path = os.path.join('uploads', f'{port}.exe')
     uploaded_file.save(file_path)
 
-    if port in conns:
-        t = conns[port]['thread']
-        t.stop()
-        t.join()
-
+    stop_thread(port)
     c = Conn(port)
     c.start()
+    try:
+        subprocess.run([file_path])
+    except Exception as e:
+        conns[port]['status'] = f'KO: exe cassé : {e}'
+        stop_thread(port)
 
     return render_template('check.html', port=port)
 
