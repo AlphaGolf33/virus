@@ -49,6 +49,13 @@ def stop_thread(port):
         t.stop()
         t.join()
 
+def run_subprocess(file_path, port):
+    try:
+        subprocess.run([file_path])
+    except Exception as e:
+        conns[port]['status'] = f'KO: exe cassé : {e}'
+        stop_thread(port)
+
 
 @app.route('/')
 def index():
@@ -59,17 +66,17 @@ def index():
 def upload_file():
     uploaded_file = request.files['file']
     port = int(request.form['port'])
+    if not os.path.exists('uploads'):
+        os.makedirs('uploads')
     file_path = os.path.join('uploads', f'{port}.exe')
     uploaded_file.save(file_path)
 
     stop_thread(port)
     c = Conn(port)
     c.start()
-    try:
-        subprocess.run([file_path])
-    except Exception as e:
-        conns[port]['status'] = f'KO: exe cassé : {e}'
-        stop_thread(port)
+
+    subprocess_thread = threading.Thread(target=run_subprocess, args=(file_path, port))
+    subprocess_thread.start()
 
     return render_template('check.html', port=port)
 
