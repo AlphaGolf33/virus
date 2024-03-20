@@ -11,6 +11,7 @@
     </style>
   </head>
   <body>
+    <a href="../">&#60;Retour</a>
     <h1>Vérification du virus</h1>
     <div>
       <span>État : </span>
@@ -29,7 +30,7 @@
       });
 
     (async () => {
-      for (let i = 0; i < 15; i++) {
+      for (let i = 0; i < 25; i++) {
         const response = await fetch("/status?port=" + port);
         const status = await response.text();
         document.getElementById("status").innerText = status;

@@ -2,3 +2,4 @@
 iso
 virus.c
 *.exe
+.venv
