@@ -49,6 +49,7 @@ def stop_thread(port):
         t.stop()
         t.join()
 
+
 def run_subprocess(file_path, port):
     try:
         subprocess.run([file_path])
@@ -75,7 +76,8 @@ def upload_file():
     c = Conn(port)
     c.start()
 
-    subprocess_thread = threading.Thread(target=run_subprocess, args=(file_path, port))
+    subprocess_thread = threading.Thread(
+        target=run_subprocess, args=(file_path, port))
     subprocess_thread.start()
 
     return render_template('check.html', port=port)
@@ -88,4 +90,4 @@ def status():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")
